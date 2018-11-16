@@ -20,7 +20,8 @@ script:
   - docker ps | grep -q redmine_test
 
 after_success:
-  - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
+  - docker login -u $DOCKER_USER -p $DOCKER_PASS
   - export REPO=dmitryshomrin/test_task
-  - docker tag $REPO:latest
+  - docker tag $REPO:latest $REPO:$TAG
+  - docker tag $REPO:latest $REPO:travis-$TRAVIS_BUILD_NUMBER
   - docker push $REPO
