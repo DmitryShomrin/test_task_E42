@@ -17,7 +17,7 @@ install:
 
 
 script:
-  - docker ps | grep -q redmine1_test
+  - docker ps | grep -q redmine_test
 
 after_success:
   - docker login -u $DOCKER_USER -p $DOCKER_PASS
