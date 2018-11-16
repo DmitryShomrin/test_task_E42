@@ -1,0 +1,26 @@
+sudo: required
+services:
+  - docker
+
+env:
+  global:
+    #DOCKER_EMAIL
+    - secure: "J/p48JolgjFbPlYsDnMnShrFMgNIfMof+xWwCZkugMbKupYXdhmkXNqWKA1hDgCvXI/jWNWZapFnCKVTeqawSNGnCRs5s/BSKjyjP3wf4TrfKD+if7tv227njkeWqcvWP/NtMohzH8Hiu47gWezcVsK8qIMDhv0YtdqmrakVJHyUcnwtyJuVb/GQ733q51siln7iPM6Ua2RpFilBIiw8/gBG2J1f2TvhmNrsPWBSKDFbjRDoXsiEJYyPc0XLBF2+TbpHq0yQKwcyd9LAdRZjxjfqbRG3wyTsKrmq5Dfexx6jJ5DY/biRQwlccFuE6yKvCYYhmTET41QZO57ZnjNlXPUdIH1X8JZCkzkrdi9jZLB/3760vNItsuQ828OBfDqmNbgiX1psXzyF8Xw7XcswWfgd+f6l0nJ9eaVRWcdqSML5Nodo/qKabBg6SfHjC+jxvyP4HLnYCXqjljF2In6caDBiZF1y+NDzQ+9ITiNfjIInw1Rx7W0xzo53WesD0ESEkIV2bCjuw88SpHqMG6xSKUvyLB/Ra9nN1zJXOALy/9gqwtW3VBMgagHcsDX5EGJXYmjbXrX5EZXFFZDIBizz3Vet7aoMlTrKUEd6aZlKJ0GxnEGyDTL8ONmSn6cADNxUiS4K91BA/qyMDiOhH3bcgJ8RJLEr9nUf8j3mD8YDb+8="
+    #DOCKER_USER
+    - secure: "DddydZwHtTb7Jmh7vRfKZQkksbTL2s5vzxR8eS27sa7C6PpjLDaIcRqK5h2cLjzZibmatCGnNiS/EIfYL7WbG8IkMg6/UrQPItlXK0ngjhxXlE8dmemBBQKoI9JkAk23gWdM7zYZ7xRPPMG0QeZszbwvx898r6n0973AEl8YYpL7wWL6MxeIGrNsdHQq7GwSivt0nWMehak+D2mMU6ywq4EQBmfJyzjaeTFtM5JfZskbTvawc0YL1V7U1mBd96lZ79AidrE1oMEm4ApYu+uvvFYAMOtXxvQhrGTsZAtoi/RqYyLxAPpBlaoJsdh7NvL+IzhgB3hTbVihtchxMkFqN7wFNbsd5Ju8/GQRFMiJ7y3xZPbcqfNkuc8iD8VJsXz3a9/ZDicZQ5vZ9JdHMA+jnzX+BTTTx4AlP7UlT0v0ZDiqgzVEnRuWv16s/PRdTThCLJEGIiHiISn5a5chg1M4F7VLK+wi02v2Rj87oOnVX2EGHRwSUbqKPSB1UUaPx9VPErWjZGaKTNMa4k6BeAZpxCsabyd6Eo8RqBr9S/zGVMs2LvzzHGYZ0isoh1YBxRsybvNYOLfwb9+/A9WgBy6FMRoKOOil/PzQgp0HVHGsdgD0aQELrkfT3Wzw+hvxNj50/hXJEFGiPFGm4IhNUgWEOxOVL0YCceezjNOePN3Jw8s="
+    #DOCKER_PASS
+    - secure: "j6qGlxJvURtbWG6u5L9WeA8zEGtWhehvYJjqgiH7MU/shJ5trD1Mzn8ORtuZmO2brplOQUwaU5do5lMxYyy+2rGWL5arC4REFtN0UhHFpnuQF3BYUB/Mnyl76Vrf2uaWam/dRuTg4vJH9LKsgU+GJvhjSfFpr1WAx7K4+lQzzK2aFt289/9rEr8NfP1+KUpKT2lAeZI7OacGj2eyFVoLeQUib7VXAcKMNwgpGNQJsaiC6BXIzkLmOnWHXR8/UMoqwihADuz1Ki+kADy4DdBC5DN6Y8ad/Nu13L7LtSMabMKZ8VVfdbdHQ+vhfvRuIcThk7f+oLh5xnCkHn+nqpkyYLoSoKclAPHhCODTFtEb6SPJUJQppcKX0jLGhF5aBviVBw+zfXb8gM2aDjdt3CkFbnQGW8W5y7polSrDIwEC9bWeNomHs/MDv/EPYlxSlXAxaL5SJNhcxEhd+DtD+ew3XrtwwDIKWZx8/2z43WEBgqjGs4LuBWXXBMrn78hMMWDnCrjbbTTqTMwp8ct4a1qJV5cBDyKKIWhPU4B4VlJB7bJr565gJdzIBCxpvKDpIdZWixJwUSaGhEBvkNo+ucFT1TgqGJQo5JP79E04K4sipA0D75hbU+MlFhT/vksZZBrMCwfjpNmeqEiT0sLsHNQnF5d48yYnlbZ30/78V9rmvw4="
+
+install:
+  - docker build -t redmine_test .
+  - docker run -d -p 127.0.0.1:3000:3000 --name redmine_test redmine_test
+
+
+script:
+  - docker ps | grep -q redmine_test
+
+after_success:
+  - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
+  - export REPO=dmitryshomrin/test_task
+  - docker tag $REPO:latest
+  - docker push $REPO
