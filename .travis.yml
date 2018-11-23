@@ -12,8 +12,9 @@ env:
     - secure: "j6qGlxJvURtbWG6u5L9WeA8zEGtWhehvYJjqgiH7MU/shJ5trD1Mzn8ORtuZmO2brplOQUwaU5do5lMxYyy+2rGWL5arC4REFtN0UhHFpnuQF3BYUB/Mnyl76Vrf2uaWam/dRuTg4vJH9LKsgU+GJvhjSfFpr1WAx7K4+lQzzK2aFt289/9rEr8NfP1+KUpKT2lAeZI7OacGj2eyFVoLeQUib7VXAcKMNwgpGNQJsaiC6BXIzkLmOnWHXR8/UMoqwihADuz1Ki+kADy4DdBC5DN6Y8ad/Nu13L7LtSMabMKZ8VVfdbdHQ+vhfvRuIcThk7f+oLh5xnCkHn+nqpkyYLoSoKclAPHhCODTFtEb6SPJUJQppcKX0jLGhF5aBviVBw+zfXb8gM2aDjdt3CkFbnQGW8W5y7polSrDIwEC9bWeNomHs/MDv/EPYlxSlXAxaL5SJNhcxEhd+DtD+ew3XrtwwDIKWZx8/2z43WEBgqjGs4LuBWXXBMrn78hMMWDnCrjbbTTqTMwp8ct4a1qJV5cBDyKKIWhPU4B4VlJB7bJr565gJdzIBCxpvKDpIdZWixJwUSaGhEBvkNo+ucFT1TgqGJQo5JP79E04K4sipA0D75hbU+MlFhT/vksZZBrMCwfjpNmeqEiT0sLsHNQnF5d48yYnlbZ30/78V9rmvw4="
 
 install:
-  - docker build -t redmine_test .
-  - docker run -d -p 127.0.0.1:3000:3000 --name redmine_test redmine_test
+  - export REPO=dmitryshomrin/test_task
+  - docker build -t $REPO:latest .
+  - docker run -d -p 127.0.0.1:3000:3000 --name redmine_test $REPO:latest
 
 
 script:
@@ -21,6 +22,4 @@ script:
 
 after_success:
   - docker login -u $DOCKER_USER -p $DOCKER_PASS
-  - export REPO=dmitryshomrin/test_task
-  - docker build -f Dockerfile -t $REPO:latest .
   - docker push $REPO
